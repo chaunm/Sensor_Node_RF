@@ -139,7 +139,7 @@ VOID InitDevice(PVOID pDefinition)
     }
     StartShortTimer(UPDATE_BUFFER_INTERVAL, UpdateRegisterProc, NULL); 
     StartShortTimer(UPDATE_BUFFER_INTERVAL, ProcessBufferDevice, NULL);
-	StartShortTimer(REPORT_REGISTER_INTERVAL, RequireRegisterInstruction, NULL); // no need - chau nguyen
+//	StartShortTimer(REPORT_REGISTER_INTERVAL, RequireRegisterInstruction, NULL); // no need - chau nguyen
 }
 /*-------------------------------------------------------------------------------
 Function:  VOID RegisterDeviceCallback(BYTE nEvent, SYSTEMCALLBACK fnDeviceCallback)

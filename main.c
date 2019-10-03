@@ -11,9 +11,9 @@
 VOID InitRegister()
 {
 	TEMP_HIGH = 0;
-	TEMP_HIGH = 0;
-	TEMP_HIGH = 0;
-	TEMP_HIGH = 0;
+	TEMP_LOW = 0;
+	HUMI_HIGH = 0;
+	HUMI_LOW = 0;
 	ALARM = 0;
 }
 
@@ -42,6 +42,7 @@ void main()
 	InitFlash();
 	DebugLedStart();
   	OpenUartPort(UART_PORT_1, 9600);
+	WriteUart(UART_PORT_1, "A", 1);
 	LedSegmentInit();
   	InitDevice(NULL);
 	InitRegister();

@@ -47,16 +47,20 @@ Note: <Note>
 #define UART_GPIO_PORT				GPIOA
 #define UART_TX_PIN					GPIO_Pin_2
 #define UART_RX_PIN					GPIO_Pin_3
+#define UART_TX_PIN_NUM				2
+#define UART_RX_PIN_NUM				3
 #define UART_PIN_AF					GPIO_AF_1
 #endif
 
 #ifdef STM32F091
 #define UART_GPIO_CLK 				(RCC->AHBENR)
-#define UART_GPIO_CLK_ENABLE		RCC_AHBENR_GPIOAEN
-#define UART_GPIO_PORT				GPIOA
-#define UART_TX_PIN					GPIO_Pin_9
-#define UART_RX_PIN					GPIO_Pin_10
-#define UART_PIN_AF					GPIO_AF_1
+#define UART_GPIO_CLK_ENABLE		RCC_AHBENR_GPIOBEN
+#define UART_GPIO_PORT				GPIOB
+#define UART_TX_PIN					GPIO_Pin_6
+#define UART_RX_PIN					GPIO_Pin_7
+#define UART_TX_PIN_NUM				6
+#define UART_RX_PIN_NUM				7
+#define UART_PIN_AF					GPIO_AF_0
 #endif
 /*-----------------------------------------------------------------------------*/
 /* Data type definitions */
@@ -137,9 +141,10 @@ VOID OpenUartPort(BYTE nPort, DWORD nBaudrate)
     GPIO_Init(UART_GPIO_PORT, &gpioInitStruct);
     gpioInitStruct.GPIO_Pin = UART_RX_PIN;
     GPIO_Init(UART_GPIO_PORT, &gpioInitStruct);
-    GPIO_PinAFConfig(UART_GPIO_PORT, UART_TX_PIN, UART_PIN_AF);
-    GPIO_PinAFConfig(UART_GPIO_PORT, UART_RX_PIN, UART_PIN_AF);
+    GPIO_PinAFConfig(UART_GPIO_PORT, UART_TX_PIN_NUM, UART_PIN_AF);
+    GPIO_PinAFConfig(UART_GPIO_PORT, UART_RX_PIN_NUM, UART_PIN_AF);
     USART_Init(USARTx, &USART_InitStruct);
+	USART_Cmd(USARTx, ENABLE);
 	// enable RX interrupt
     USART_ITConfig(USARTx, USART_IT_RXNE, ENABLE);
     //USART_IT_TXEConfig(USARTx, ENABLE);

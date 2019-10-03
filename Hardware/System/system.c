@@ -90,6 +90,7 @@ VOID InitSystem(VOID)
     // Relocate the vector table to internal SRAM at 0x20000000
     MemoryRemapConfig(MemoryRemap_SRAM);
 #endif // RELEASE
+	__enable_irq();
     //Init clock and hardware
     SysTickConfig();
 }
