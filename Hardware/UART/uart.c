@@ -11,8 +11,8 @@ Author: NGUYEN KIM THANH
 Created: 08-2014
 
 Modified:
-  <Name>
-  <Date>
+  <Chau Nguyen>
+  <09-2019>
   <Change>
 
 Released:
@@ -39,6 +39,12 @@ Note: <Note>
 /*-----------------------------------------------------------------------------*/
 #define UART_BUFFER_SIZE	128 // chaunm check here
 #define UART_PACKAGE_SIZE	128
+
+// hardware definition 
+#define UART_GPIO_CLK 		(RCC->AHBENR)
+#define UART_GPIO_PORT		GPIOA
+#define UART_TX_PIN			  2
+#define UART_RX_PIN				3
 
 /*-----------------------------------------------------------------------------*/
 /* Data type definitions */
@@ -83,6 +89,8 @@ VOID OpenUartPort(BYTE nPort, DWORD nBaudrate)
 {
 	USART_TypeDef* USARTx;
     USART_InitTypeDef USART_InitStruct;
+	GPIO_InitTypeDef gpioInitStruct;
+    NVIC_InitTypeDef NVIC_InitStructure;
     USART_InitStruct.USART_BaudRate = nBaudrate;
     USART_InitStruct.USART_WordLength = USART_WordLength_8b;
     USART_InitStruct.USART_StopBits = USART_StopBits_1;
@@ -91,19 +99,15 @@ VOID OpenUartPort(BYTE nPort, DWORD nBaudrate)
     USART_InitStruct.USART_HardwareFlowControl = USART_HardwareFlowControl_None; 
 
     g_nUartPort = nPort;
-	switch (nPort)
-	{
-	case UART_PORT_1:
-		USARTx = USART1;
-		break;
-// Only one UART for this chip
-//	case UART_PORT_2:
-//		USARTx = USART2;
-//		break;
-	default:
-		return;
-	}
-	NVIC_InitTypeDef NVIC_InitStructure;
+	  switch (nPort)
+	  {
+	      case UART_PORT_1:
+		      USARTx = USART1;
+		      break;
+	      default:
+		      return;
+	  }
+	
     if (USARTx == USART1)
     {
         RCC->APB2ENR |= RCC_APB2ENR_USART1EN;
@@ -112,39 +116,21 @@ VOID OpenUartPort(BYTE nPort, DWORD nBaudrate)
         NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
         NVIC_Init(&NVIC_InitStructure);
     }
-#if !defined(STM32F030x6)
-    else if (USARTx == USART2)
-    {
-        RCC->APB1ENR |= RCC_APB1ENR_USART2EN;
-        NVIC_InitStructure.NVIC_IRQChannel = USART2_IRQn;
-        NVIC_InitStructure.NVIC_IRQChannelPriority = 2;
-        NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-        NVIC_Init(&NVIC_InitStructure);
-    }
-#endif
-#if defined (STM32F071) || defined (STM32F072)
-    else if (USARTx == USART3)
-    {
-        RCC->APB1ENR |= RCC_APB1ENR_USART3EN;
-        NVIC_InitStructure.NVIC_IRQChannel = USART3_4_IRQn;
-        NVIC_InitStructure.NVIC_IRQChannelPriority = 2;
-        NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-        NVIC_Init(&NVIC_InitStructure);
-    }
-    else if (USARTx == USART4)
-    {
-        RCC->APB1ENR |= RCC_APB1ENR_USART4EN;
-        NVIC_InitStructure.NVIC_IRQChannel = USART3_4_IRQn;
-        NVIC_InitStructure.NVIC_IRQChannelPriority = 2;
-        NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-        NVIC_Init(&NVIC_InitStructure);
-    }
-#endif // STM32F071
-
-    //GPIO_TypeUsart(USARTx); - move to BSP - chaunm
+	// configure GPIO
+	UART_GPIO_CLK |= RCC_AHBENR_GPIOAEN;
+    gpioInitStruct.GPIO_Pin = UART_TX;
+	gpioInitStruct.GPIO_Mode = GPIO_Mode_AF; 
+    gpioInitStruct.GPIO_OType = GPIO_OType_PP;
+    gpioInitStruct.GPIO_Speed = GPIO_Speed_Level_1;
+    GPIO_Init(UART_GPIO_PORT, &gpioInitStruct);
+    gpioInitStruct.GPIO_Pin = UART_RX;
+    GPIO_Init(UART_GPIO_PORT, &gpioInitStruct);
+    GPIO_PinAFConfig(UART_GPIO_PORT, UART_TX_PIN, GPIO_AF_1);
+    GPIO_PinAFConfig(UART_GPIO_PORT, UART_RX_PIN, GPIO_AF_1);
     USART_Init(USARTx, &USART_InitStruct);
+	// enable RX interrupt
     USART_ITConfig(USARTx, USART_IT_RXNE, ENABLE);
-//    USART_IT_TXEConfig(USARTx, ENABLE);
+    //USART_IT_TXEConfig(USARTx, ENABLE);
 }
 /*-------------------------------------------------------------------------------
 Function: VOID OpenUartPortIndirect(PUARTCONFIG pParam);
@@ -212,11 +198,6 @@ VOID WriteUart(BYTE nPort, PVOID pData, BYTE nLen)
 	case UART_PORT_1:
 		USARTx = USART1;
 		break;
-/*        
-	case UART_PORT_2:
-		USARTx = USART2;
-		break;
-*/
 	default:
 		return;
 	}
@@ -253,15 +234,20 @@ VOID WriteUartIndirect(BYTE nPort, PUARTBUFFER pUartBuffer)
 	case UART_PORT_1:
 		USARTx = USART1;
 		break;
-/*
-	case UART_PORT_2:
-		USARTx = USART2;
-		break;
-*/
 	default:
 		return;
 	}
 	// chau nguyen - need to add header for RF here
+	/* header for RF Module - broadcast type 0xFFFF + channel*/
+	USART_WriteByte(USARTx, 0xFF):
+	while (USART_GetFlagStatus(USARTx, USART_FLAG_TXE) == RESET);
+	
+	USART_WriteByte(USARTx, 0xFF):
+	while (USART_GetFlagStatus(USARTx, USART_FLAG_TXE) == RESET);
+	
+	USART_WriteByte(USARTx, 0x03): // RF channel
+	while (USART_GetFlagStatus(USARTx, USART_FLAG_TXE) == RESET);
+	
     USART_WriteByte(USARTx, PACKAGE_START_BYTE);
     while (USART_GetFlagStatus(USARTx, USART_FLAG_TXE) == RESET);
 
@@ -407,13 +393,3 @@ VOID USART1_IRQHandler(VOID)
 		g_nBufferIndex = (g_nBufferIndex + 1) % UART_BUFFER_SIZE;
 	}
 }
-/*
-VOID USART2_IRQHandler(VOID)
-{
-	if (USART_GetITFlagRXNE(USART2) != RESET)
-	{
-		g_arReceiveBuffer[g_nBufferIndex] = USART_ReceiveByte(USART2);
-		g_nBufferIndex = (g_nBufferIndex + 1) % UART_BUFFER_SIZE;
-	}
-}
-*/
