@@ -5,9 +5,9 @@
 #define NUMBER_OF_LED   12
 #define LED_GPIO_PORT	GPIOA
 #define LED_GPIO_CLK	(RCC->AHBENR)
-#define SHCP 			0
-#define STCP 			1
-#define DS   			2
+#define SHCP 			6
+#define STCP 			5
+#define DS   			7
 
 #define TRIGGER_SHCP() { GPIO_ResetBits(LED_GPIO_PORT, SHCP); GPIO_SetBits(LED_GPIO_PORT, SHCP); }
 
