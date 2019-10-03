@@ -41,16 +41,23 @@ Note: <Note>
 #ifdef FLASH_32K // chaunm - need to check with datasheet again
 #define LOW_SECTION     0x1E00 
 #define HIGH_SECTION    0x1F00
+#define SECTION_SIZE	0x0100	//1kB
 #endif
 #ifdef LOWFLASH_64K
 #define LOW_SECTION		0x3C00	
 #define HIGH_SECTION	0x3E00
+#define SECTION_SIZE	0x0200	//2kB
 #elif HIGHFLASH_128K
 #define LOW_SECTION		0x7C00	
 #define HIGH_SECTION	0x7E00
+#define SECTION_SIZE	0x0200	//2kB
+#endif
+#if HIGHFLASH_256
+#define LOW_SECTION		0xFC00	
+#define HIGH_SECTION	0xFE00
+#define SECTION_SIZE	0x0200	//2kB
 #endif
 
-#define SECTION_SIZE	0x0100
 #define FREE_ITEM 		0xFF
 #define ZERO_ITEM		0x00
 #define FREE_BLOCK		0xFFFFFFFF

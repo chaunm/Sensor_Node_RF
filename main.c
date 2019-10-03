@@ -6,6 +6,7 @@
 #include "led-segment.h"
 #include "uart.h"
 #include "device-desc.h"
+#include "debug-led.h"
 
 VOID InitRegister()
 {
@@ -39,6 +40,7 @@ void main()
 {
   	InitSystem();
 	InitFlash();
+	DebugLedStart();
   	OpenUartPort(UART_PORT_1, 9600);
 	LedSegmentInit();
   	InitDevice(NULL);

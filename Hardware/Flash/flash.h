@@ -30,13 +30,10 @@ Note: <Note>
 /*-----------------------------------------------------------------------------*/
 /* Macro definitions  */
 /*-----------------------------------------------------------------------------*/
-#define HIGH_DENSITY
 
-#ifdef LOW_DENSITY
+#ifdef FLASH_PAGE_1K
 #define FLASH_PAGE_FACTOR	10
-#elif  MEDIUM_DENSITY
-#define FLASH_PAGE_FACTOR	10
-#elif defined HIGH_DENSITY
+#elif 	FLASH_PAGE_2K
 #define FLASH_PAGE_FACTOR	11
 #endif // LOW_DENSITY
 /*-----------------------------------------------------------------------------*/

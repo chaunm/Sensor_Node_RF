@@ -41,11 +41,23 @@ Note: <Note>
 #define UART_PACKAGE_SIZE	128
 
 // hardware definition 
-#define UART_GPIO_CLK 		(RCC->AHBENR)
-#define UART_GPIO_PORT		GPIOA
-#define UART_TX_PIN			  2
-#define UART_RX_PIN				3
+#ifdef STM32F030
+#define UART_GPIO_CLK 				(RCC->AHBENR)
+#define UART_GPIO_CLK_ENABLE		RCC_AHBENR_GPIOAEN
+#define UART_GPIO_PORT				GPIOA
+#define UART_TX_PIN					GPIO_Pin_2
+#define UART_RX_PIN					GPIO_Pin_3
+#define UART_PIN_AF					GPIO_AF_1
+#endif
 
+#ifdef STM32F091
+#define UART_GPIO_CLK 				(RCC->AHBENR)
+#define UART_GPIO_CLK_ENABLE		RCC_AHBENR_GPIOAEN
+#define UART_GPIO_PORT				GPIOA
+#define UART_TX_PIN					GPIO_Pin_9
+#define UART_RX_PIN					GPIO_Pin_10
+#define UART_PIN_AF					GPIO_AF_1
+#endif
 /*-----------------------------------------------------------------------------*/
 /* Data type definitions */
 /*-----------------------------------------------------------------------------*/
@@ -117,16 +129,16 @@ VOID OpenUartPort(BYTE nPort, DWORD nBaudrate)
         NVIC_Init(&NVIC_InitStructure);
     }
 	// configure GPIO
-	UART_GPIO_CLK |= RCC_AHBENR_GPIOAEN;
-    gpioInitStruct.GPIO_Pin = UART_TX;
+	UART_GPIO_CLK |= UART_GPIO_CLK_ENABLE;
+    gpioInitStruct.GPIO_Pin = UART_TX_PIN;
 	gpioInitStruct.GPIO_Mode = GPIO_Mode_AF; 
     gpioInitStruct.GPIO_OType = GPIO_OType_PP;
     gpioInitStruct.GPIO_Speed = GPIO_Speed_Level_1;
     GPIO_Init(UART_GPIO_PORT, &gpioInitStruct);
-    gpioInitStruct.GPIO_Pin = UART_RX;
+    gpioInitStruct.GPIO_Pin = UART_RX_PIN;
     GPIO_Init(UART_GPIO_PORT, &gpioInitStruct);
-    GPIO_PinAFConfig(UART_GPIO_PORT, UART_TX_PIN, GPIO_AF_1);
-    GPIO_PinAFConfig(UART_GPIO_PORT, UART_RX_PIN, GPIO_AF_1);
+    GPIO_PinAFConfig(UART_GPIO_PORT, UART_TX_PIN, UART_PIN_AF);
+    GPIO_PinAFConfig(UART_GPIO_PORT, UART_RX_PIN, UART_PIN_AF);
     USART_Init(USARTx, &USART_InitStruct);
 	// enable RX interrupt
     USART_ITConfig(USARTx, USART_IT_RXNE, ENABLE);
@@ -239,13 +251,13 @@ VOID WriteUartIndirect(BYTE nPort, PUARTBUFFER pUartBuffer)
 	}
 	// chau nguyen - need to add header for RF here
 	/* header for RF Module - broadcast type 0xFFFF + channel*/
-	USART_WriteByte(USARTx, 0xFF):
+	USART_WriteByte(USARTx, 0xFF);
 	while (USART_GetFlagStatus(USARTx, USART_FLAG_TXE) == RESET);
 	
-	USART_WriteByte(USARTx, 0xFF):
+	USART_WriteByte(USARTx, 0xFF);
 	while (USART_GetFlagStatus(USARTx, USART_FLAG_TXE) == RESET);
 	
-	USART_WriteByte(USARTx, 0x03): // RF channel
+	USART_WriteByte(USARTx, 0x03); // RF channel
 	while (USART_GetFlagStatus(USARTx, USART_FLAG_TXE) == RESET);
 	
     USART_WriteByte(USARTx, PACKAGE_START_BYTE);
