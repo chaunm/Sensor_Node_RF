@@ -27,18 +27,16 @@ Note: <Note>
 /*-----------------------------------------------------------------------------*/
 /* Local Macro definitions */
 /*-----------------------------------------------------------------------------*/
-#define REGISTER_COUNT                  255
+#define REGISTER_COUNT                  50
 #define REPORT_REGISTER_INTERVAL        1000
 #define UPDATE_BUFFER_INTERVAL          100
 
-#define MAX_BUFFER_SIZE                 64
+#define MAX_BUFFER_SIZE                 48
 #define MAX_REGISTER_PART               8
 #define MAX_PARAMETERS_PART             4
 
 #define MAX_QUEUE_ZISE                  4
 
-#define WIFI_DEFINITION_NACK            0
-#define WIFI_DEFINITION_ACK             1
 
 #define INSTRUCTION_REGISTER            0x01
 #define NOOP_INSTRUCTION                0x00
@@ -86,8 +84,7 @@ INTERNAL DEVICEBUFFER g_arBufferDevice[MAX_QUEUE_ZISE] = { 0 };
 INTERNAL BYTE g_nPendingBufferCount = 0;
 
 INTERNAL BYTE g_nMaxPackageDefinition = 0;
-INTERNAL BYTE g_nProcessDefinitonIndex = 0;
-INTERNAL BOOL g_bSendDefinition = FALSE;
+
 
 INTERNAL SYSTEMCALLBACK g_pDeviceEvents[DEVICE_EVENT_COUNT] = { NULL };
 /*-----------------------------------------------------------------------------*/
@@ -104,10 +101,7 @@ INTERNAL VOID UpdateRegisterProc(PVOID pData);
 INTERNAL VOID AllocatedBuffer(BYTE nType, PVOID pData, BYTE nLength);
 INTERNAL VOID ReleaseBuffer();
 INTERNAL VOID ProcessBufferDevice(PVOID pData);
-INTERNAL VOID WifiProcessPackageAck(BYTE nAck);
-INTERNAL VOID WifiSendDefinition(BYTE nPackageIndex);
-INTERNAL VOID WifiUpdateRegister();
-INTERNAL VOID WifiUpdateParameter();
+
 /*-----------------------------------------------------------------------------*/
 /* Function implementations */
 /*-----------------------------------------------------------------------------*/
@@ -143,9 +137,9 @@ VOID InitDevice(PVOID pDefinition)
             g_nMaxPackageDefinition += 1;
         }
     }
-    StartShortTimer(UPDATE_BUFFER_INTERVAL, UpdateRegisterProc, NULL);
+    StartShortTimer(UPDATE_BUFFER_INTERVAL, UpdateRegisterProc, NULL); 
     StartShortTimer(UPDATE_BUFFER_INTERVAL, ProcessBufferDevice, NULL);
-	StartShortTimer(REPORT_REGISTER_INTERVAL, RequireRegisterInstruction, NULL);
+	StartShortTimer(REPORT_REGISTER_INTERVAL, RequireRegisterInstruction, NULL); // no need - chau nguyen
 }
 /*-------------------------------------------------------------------------------
 Function:  VOID RegisterDeviceCallback(BYTE nEvent, SYSTEMCALLBACK fnDeviceCallback)
@@ -434,55 +428,6 @@ INTERNAL VOID OnUartDataProc(PVOID pData)
         }
         break;
 
-    case PACKAGE_TYPE_DEVICE_WIFI:
-        {
-            BYTE nCount = pBuffer->nLength / sizeof(DEVICEPARAMPART);
-            for (BYTE nIndex = 0; nIndex < nCount; nIndex++)
-            {
-                PARAMEVENT stEvent ={
-                    DEVICE_PARAM_EVENT,
-                    _PDEVICEPARAM(pDataRemote)->pPart[nIndex].nParam,
-                    _PDEVICEPARAM(pDataRemote)->pPart[nIndex].nValue
-                };
-
-                if (stEvent.nParam < 221)
-                {
-                    REGISTEREVENT stReEvent = {
-                        DEVICE_REGISTER_EVENT,
-                        (BYTE)(stEvent.nParam),
-                        (BYTE)(stEvent.nValue),
-                        g_pRegisters[(BYTE)(stEvent.nParam)]
-                    };
-                    if (stReEvent.nRegister == INSTRUCTION_REGISTER)
-                    {
-                        ProcessInstruction(&stReEvent);
-                    }
-                    else
-                    {
-                        ProcessCustomRegister(&stReEvent);
-                    }
-                }
-                else
-                {
-                    if (g_pDeviceEvents[DEVICE_PARAM_EVENT] != NULL)
-                    {
-                        g_pDeviceEvents[DEVICE_PARAM_EVENT](&stEvent);
-                    }
-
-                    if (stEvent.nValue != INVALID_PARAMETER_VALUE)
-                    {
-                        if (!SetParam(stEvent.nParam, stEvent.nValue))
-                            stEvent.nValue = INVALID_PARAMETER_VALUE;
-                    }
-
-                    DEVICEPARAMPART stDeviceParamPart;
-                    stDeviceParamPart.nParam = stEvent.nParam;
-                    stDeviceParamPart.nValue = stEvent.nValue;
-                    AllocatedBuffer(PACKAGE_TYPE_DEVICE_PARAM, &stDeviceParamPart, sizeof(DEVICEPARAMPART));
-                }
-            }
-        }
-        break;
 
     case PACKAGE_TYPE_GET_TICK:
         g_bTickFlag = TRUE;
@@ -492,17 +437,12 @@ INTERNAL VOID OnUartDataProc(PVOID pData)
         g_bIsConnected = FALSE;
         break;
 
-    case PACKAGE_TYPE_DEFINITION_ACK:
-        WifiProcessPackageAck(pDataRemote[1]);
-        break;
-
-//#ifdef BOOTLOADER
-	case PACKAGE_TYPE_DEVICE_FLASH: // need to change here to process flash write
+ 	case PACKAGE_TYPE_DEVICE_FLASH: // need to change here to process flash write  - chau nguyen
 		FLASH_Unlock();
 		FLASH_ProgramHalfWord(APPLICATION_ADDRESS, 0x00);
 		FLASH_Lock();
 //		ResetParams();
-		StartShortTimer(500, Reboot, NULL);
+//		StartShortTimer(500, Reboot, NULL);
 //		ResetDevice();
 		break;
 //#endif
@@ -545,20 +485,6 @@ INTERNAL VOID ProcessInstruction(PREGISTEREVENT pEvent)
     case PARAMETER_INSTRUCTION:
         PopulateParameters();
         g_bIsConnected = TRUE;
-        break;
-
-    case DEFINITION_INSTRUCTION:
-        g_nProcessDefinitonIndex = 0;
-        g_bSendDefinition = FALSE;
-        AllocatedBuffer(PACKAGE_TYPE_DEFINITION_START, &g_nMaxPackageDefinition, 1);
-        break;
-
-    case REG_UPDATE_INSTRUCTION:
-        WifiUpdateRegister();
-        break;
-
-    case PARAM_UPDATE_INTRUCTION:
-        WifiUpdateParameter();
         break;
 
     default:
@@ -680,7 +606,7 @@ INTERNAL VOID AllocatedBuffer(BYTE nType, PVOID pData, BYTE nLength)
 
     g_arBufferDevice[g_nPendingBufferCount].nLength = nLength;
     g_arBufferDevice[g_nPendingBufferCount].nType = nType;
-    g_arBufferDevice[g_nPendingBufferCount].nAddr = 0x0001;
+    g_arBufferDevice[g_nPendingBufferCount].nAddr = 0x0001; // address of device = chau nguyen
 
     for (BYTE nCount = 0; nCount < nLength; nCount++)
     {
@@ -720,129 +646,4 @@ INTERNAL VOID ProcessBufferDevice(PVOID pData)
     StartShortTimer(UPDATE_BUFFER_INTERVAL, ProcessBufferDevice, NULL);
 }
 
-INTERNAL VOID WifiProcessPackageAck(BYTE nAck)
-{
-    if (nAck == WIFI_DEFINITION_ACK)
-    {
-        if ((g_nProcessDefinitonIndex + 1) == g_nMaxPackageDefinition)
-		{
-			AllocatedBuffer(PACKAGE_TYPE_DEFINITION_FINISH, &g_nMaxPackageDefinition, 1);
-			return;
-		}
 
-        if (g_bSendDefinition) //nhan dc ack va goi definition da gui
-        {
-            g_nProcessDefinitonIndex++;
-            WifiSendDefinition(g_nProcessDefinitonIndex);
-        }
-        else //nhan ack va goi definition chua gui
-        {
-            WifiSendDefinition(g_nProcessDefinitonIndex);
-            g_bSendDefinition = TRUE;
-        }
-    }
-
-    if (nAck == WIFI_DEFINITION_NACK)
-    {
-        if (g_bSendDefinition) //goi tin truoc gui sai va da gui definition
-        {
-            WifiSendDefinition(g_nProcessDefinitonIndex);
-        }
-        else //goi tin truoc gui sai va chua gui definition
-        {
-            g_nProcessDefinitonIndex = 0;
-            g_bSendDefinition = FALSE;
-            AllocatedBuffer(PACKAGE_TYPE_DEFINITION_START, &g_nMaxPackageDefinition, 1);
-        }
-    }
-}
-
-INTERNAL VOID WifiSendDefinition(BYTE nPackageIndex)
-{
-    WORD nDefinitonIndex = nPackageIndex * MAX_BUFFER_SIZE;
-    BYTE arBufferTemp[MAX_BUFFER_SIZE] = { 0 };
-
-    for (BYTE nIndex = 0; nIndex < MAX_BUFFER_SIZE; nIndex++)
-    {
-        arBufferTemp[nIndex] = g_pDefinition[nDefinitonIndex];
-        nDefinitonIndex++;
-        if (nDefinitonIndex > strlen(g_pDefinition))
-        {
-            break;
-        }
-    }
-    AllocatedBuffer(PACKAGE_TYPE_DEFINITION_DATA, arBufferTemp, MAX_BUFFER_SIZE);
-}
-/*-------------------------------------------------------------------------------
-Function: WifiUpdateRegister
-Purpose: Wifi Update Device
-Parameters: None
-Return: None
-Comments:  None
-Modified:
-<Modified by>
-<Date>
-<Change>
---------------------------------------------------------------------------------*/
-INTERNAL VOID WifiUpdateRegister()
-{
-    WORD nRegisterIndex = 0;
-    BYTE arRegisterDevice[MAX_BUFFER_SIZE];
-
-    for (BYTE nIndex = 0; nIndex < REGISTER_COUNT; nIndex++)
-    {
-        if (g_pRegisters[nIndex] != INVALID_REGISTER_VALUE)
-        {
-            arRegisterDevice[nRegisterIndex] = nIndex;
-            arRegisterDevice[nRegisterIndex + 1] = g_pRegisters[nIndex];
-            nRegisterIndex += 2;
-            if (nRegisterIndex >= MAX_BUFFER_SIZE)
-            {
-                AllocatedBuffer(PACKAGE_TYPE_WIFI_UPDATE, arRegisterDevice, MAX_BUFFER_SIZE);
-                nRegisterIndex = 0;
-            }
-        }
-    }
-
-    if (nRegisterIndex != 0)
-    {
-        AllocatedBuffer(PACKAGE_TYPE_WIFI_UPDATE, arRegisterDevice, nRegisterIndex);
-    }
-}
-/*-------------------------------------------------------------------------------
-Function: WifiUpdateRegister
-Purpose: Wifi Update Device
-Parameters: None
-Return: None
-Comments:  None
-Modified:
-<Modified by>
-<Date>
-<Change>
---------------------------------------------------------------------------------*/
-INTERNAL VOID WifiUpdateParameter()
-{
-    BYTE nCount = 0;
-    DEVICEPARAMPART arDeviceParamPart[MAX_PARAMETERS_PART];
-
-    for (BYTE nIndex = 0; nIndex < GetParamCount(); nIndex++)
-    {
-        if ((PARAM_ITEMS[nIndex]->nParam >= 221) && (PARAM_ITEMS[nIndex]->nParam <= 255))
-        {
-            arDeviceParamPart[nCount].nParam = PARAM_ITEMS[nIndex]->nParam;
-            arDeviceParamPart[nCount].nValue = PARAM_ITEMS[nIndex]->nValue;
-            nCount++;
-            if (nCount == MAX_PARAMETERS_PART)
-            {
-                AllocatedBuffer(PACKAGE_TYPE_DEVICE_PARAM, arDeviceParamPart, \
-                    nCount * sizeof(DEVICEPARAMPART));
-                nCount = 0;
-            }
-        }
-    }
-    if (nCount != 0)
-    {
-        AllocatedBuffer(PACKAGE_TYPE_DEVICE_PARAM, arDeviceParamPart, \
-            nCount * sizeof(DEVICEPARAMPART));
-    }
-}

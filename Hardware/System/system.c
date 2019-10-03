@@ -36,7 +36,9 @@ Note: <Note>
 /*-----------------------------------------------------------------------------*/
 /* Macro definitions  */
 /*-----------------------------------------------------------------------------*/
+#ifdef INTERRUPT_VECTOR_RAM
 #define VECTOR_INTERRUPT_COUNT	48
+#endif //INTERRUPT_VECTOR_RAM
 /*-----------------------------------------------------------------------------*/
 /* Data type definitions */
 /*-----------------------------------------------------------------------------*/
@@ -45,8 +47,10 @@ Note: <Note>
 /* Global variables  */
 /*-----------------------------------------------------------------------------*/
 // Vector table at the beginning of RAM
+#ifdef INTERRUPT_VECTOR_RAM
 #pragma location = 0x20000000
 __no_init __IO DWORD VectorTable[VECTOR_INTERRUPT_COUNT];
+#endif //INTERRUPT_VECTOR_RAM
 
 INTERNAL volatile WORD g_nTickCount = 0;
 INTERNAL volatile WORD g_nSecondCount = 0;
@@ -77,7 +81,7 @@ Modified:
 VOID InitSystem(VOID)
 {
   // chaunm - check xem co can move vector sang RAM hay khong
-#ifdef RELEASE
+#ifdef INTERRUPT_VECTOR_RAM
     // Copy vector table from flash to the base addr of sram at 0x20000000
     for (BYTE nIndex = 0; nIndex < VECTOR_INTERRUPT_COUNT; nIndex++)
     {
@@ -148,6 +152,7 @@ Modified:
 VOID Reboot(PVOID pParam)
 {
     NVIC_SystemReset();
+	/* chaunm - need to check
     SYSTEMCALLBACK fnJumpToIAP;
     DWORD nJumpAddress = 0x00;
 
@@ -156,6 +161,7 @@ VOID Reboot(PVOID pParam)
 
     __set_MSP(*(__IO PDWORD) APPLICATION_ADDRESS);  //Initialize stack Pointer
     fnJumpToIAP(NULL); //go to IAP now
+*/
 }
 /*-------------------------------------------------------------------------------
 Function: VOID ActivateWatchdog();
@@ -173,7 +179,7 @@ Modified:
 <Date>
 <Change>
 --------------------------------------------------------------------------------*/
-/*
+
 VOID ActivateWatchdog()
 {
 	IWDG_WriteAccessCmd(IWDG_WriteAccess_Enable);
@@ -182,7 +188,7 @@ VOID ActivateWatchdog()
     IWDG_ReloadCounter();
     IWDG_Enable();
 }
-*/
+
 /*-------------------------------------------------------------------------------
 Function: VOID ResetWatchdog();
 

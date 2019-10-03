@@ -37,7 +37,7 @@ Note: <Note>
 /*-----------------------------------------------------------------------------*/
 /* Macro definitions  */
 /*-----------------------------------------------------------------------------*/
-#define UART_BUFFER_SIZE	128
+#define UART_BUFFER_SIZE	128 // chaunm check here
 #define UART_PACKAGE_SIZE	128
 
 /*-----------------------------------------------------------------------------*/
@@ -261,7 +261,7 @@ VOID WriteUartIndirect(BYTE nPort, PUARTBUFFER pUartBuffer)
 	default:
 		return;
 	}
-
+	// chau nguyen - need to add header for RF here
     USART_WriteByte(USARTx, PACKAGE_START_BYTE);
     while (USART_GetFlagStatus(USARTx, USART_FLAG_TXE) == RESET);
 
@@ -366,7 +366,7 @@ BOOL ProcessUartEvents(VOID)
 			{
                 g_stUartBuffer.nLength = g_arReceivePackage[1] - 3;
                 g_stUartBuffer.nType = g_arReceivePackage[2];
-				g_stUartBuffer.nAddr = g_arReceivePackage[3] + ((WORD)g_arReceivePackage[4]) << 8;
+				g_stUartBuffer.nAddr = g_arReceivePackage[3] + (((WORD)g_arReceivePackage[4]) << 8);
                 g_stUartBuffer.pData = &g_arReceivePackage[5];
                 if (fnUartCallBack[UART_DATA_EVENT] != NULL)
 				{

@@ -114,20 +114,12 @@ typedef struct tagPAGEMASK {
 // Server packages
 #define PACKAGE_TYPE_DEVICE_REGISTER	0x0E	// 14
 #define PACKAGE_TYPE_DEVICE_PARAM	    0x0F	// 15
-#define PACKAGE_TYPE_DEVICE_WIFI        0x0D    // 13
 
-#define PAKAGE_TYPE_WIFI_COMMAND        0x01
 #define PACKAGE_TYPE_DEVICE_FLASH       0x38
 #define PACKAGE_TYPE_LOST_NETWORK       0x3C    // LOST NETWORK
 #define PACKAGE_TYPE_GET_TICK           0x3D    // 50
 #define PACKAGE_TYPE_REQUIRE_REGISTTER  0x3E    //51
 
-// Packages for wifi devices
-#define PACKAGE_TYPE_WIFI_RESET         0x01
-#define PACKAGE_TYPE_WIFI_UPDATE        0x03    // 3
-
-#define RESET_WIFI_MODULE               0x01
-#define REFLASH_WIFI_MODULE             0x02
 #define REFLASH_MCU                     0x03
 /*-----------------------------------------------------------------------------*/
 /* Global variables  */
