@@ -669,7 +669,7 @@ INTERNAL VOID AllocatedBuffer(BYTE nType, PVOID pData, BYTE nLength)
 
     g_arBufferDevice[g_nPendingBufferCount].nLength = nLength;
     g_arBufferDevice[g_nPendingBufferCount].nType = nType;
-    g_arBufferDevice[g_nPendingBufferCount].nAddr = 0x0001; // address of device = chau nguyen
+    g_arBufferDevice[g_nPendingBufferCount].nAddr = GetDeviceAddress(); // address of device = chau nguyen
 
     for (BYTE nCount = 0; nCount < nLength; nCount++)
     {
