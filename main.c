@@ -7,6 +7,7 @@
 #include "uart.h"
 #include "device-desc.h"
 #include "debug-led.h"
+#include "stwd100.h"
 
 VOID InitRegister()
 {
@@ -38,11 +39,11 @@ VOID DefineParamProc(PVOID pParameter)
 
 void main()
 {
+	StwdStart();
   	InitSystem();
 	InitFlash();
 	DebugLedStart();
   	OpenUartPort(UART_PORT_1, 9600);
-	WriteUart(UART_PORT_1, "A", 1);
 	LedSegmentInit();
   	InitDevice(NULL);
 	InitRegister();
