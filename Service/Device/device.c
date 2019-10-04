@@ -52,6 +52,17 @@ Note: <Note>
 #define PACKAGE_TYPE_DEFINITION_DATA    0x0C
 #define PACKAGE_TYPE_DEFINITION_ACK     0x41
 #define PACKAGE_TYPE_DEFINITION_FINISH  0x42
+
+#define DEVICE_ADDRESS_GPIO_CLK         (RCC->AHBERN)
+#define DEVICE_ADDRESS_GPIO_PORT        GPIOA
+#define DEVICE_ADDRESS_GPIO_CLK_EN      RCC_AHBENR_GPIOAEN
+#define DEVICE_ADDRESS_GPIO_PIN_1       GPIO_Pin_8
+#define DEVICE_ADDRESS_GPIO_PIN_2       GPIO_Pin_9
+#define DEVICE_ADDRESS_GPIO_PIN_3       GPIO_Pin_10
+#define DEVICE_ADDRESS_GPIO_PIN_4       GPIO_Pin_11
+#define DEVICE_ADDRESS_GPIO_PIN_5       GPIO_Pin_12
+#define DEVICE_ADDRESS_PORT_SFT         8
+
 /*-----------------------------------------------------------------------------*/
 /* Local Data type definitions */
 /*-----------------------------------------------------------------------------*/
@@ -84,7 +95,7 @@ INTERNAL DEVICEBUFFER g_arBufferDevice[MAX_QUEUE_ZISE] = { 0 };
 INTERNAL BYTE g_nPendingBufferCount = 0;
 
 INTERNAL BYTE g_nMaxPackageDefinition = 0;
-
+INTERNAL WORD g_nDeviceAddress = 0;
 
 INTERNAL SYSTEMCALLBACK g_pDeviceEvents[DEVICE_EVENT_COUNT] = { NULL };
 /*-----------------------------------------------------------------------------*/
@@ -105,6 +116,56 @@ INTERNAL VOID ProcessBufferDevice(PVOID pData);
 /*-----------------------------------------------------------------------------*/
 /* Function implementations */
 /*-----------------------------------------------------------------------------*/
+/*-------------------------------------------------------------------------------
+Function:  VOID InitAddress()
+Purpose: Initiazing the device address GPIO and get address
+Parameters: None
+Return: None
+Comments:  None
+Modified:
+<Modified by>
+<Date>
+<Change>
+--------------------------------------------------------------------------------*/
+INTERNAL VOID InitAddress()
+{
+    GPIO_InitTypeDef gpioInitStruct;
+    // enable GPIO CLK
+    DEVICE_ADDRESS_GPIO_CLK |= DEVICE_ADDRESS_GPIO_CLK_EN;
+    GPIO_StructInit(&gpioInitStruct);    
+    gpioInitStruct.GPIO_Mode = GPIO_Mode_IN; 
+    gpioInitStruct.GPIO_OType = GPIO_OType_PP;
+    gpioInitStruct.GPIO_Speed = GPIO_Speed_Level_1;
+    gpioInitStruct.GPIO_PuPd = GPIO_PuPd_UP;
+    gpioInitStruct.GPIO_Pin = DEVICE_ADDRESS_GPIO_PIN_1;
+    GPIO_Init(DEVICE_ADDRESS_GPIO_PORT, &gpioInitStruct);
+    gpioInitStruct.GPIO_Pin = DEVICE_ADDRESS_GPIO_PIN_2;
+    GPIO_Init(DEVICE_ADDRESS_GPIO_PORT, &gpioInitStruct);
+    gpioInitStruct.GPIO_Pin = DEVICE_ADDRESS_GPIO_PIN_3;
+    GPIO_Init(DEVICE_ADDRESS_GPIO_PORT, &gpioInitStruct);
+    gpioInitStruct.GPIO_Pin = DEVICE_ADDRESS_GPIO_PIN_4;
+    GPIO_Init(DEVICE_ADDRESS_GPIO_PORT, &gpioInitStruct);
+    gpioInitStruct.GPIO_Pin = DEVICE_ADDRESS_GPIO_PIN_5;
+    GPIO_Init(DEVICE_ADDRESS_GPIO_PORT, &gpioInitStruct);
+    g_nDeviceAddress = (((WORD)GPIO_ReadInputData(DEVICE_ADDRESS_GPIO_PORT)) >> DEVICE_ADDRESS_PORT_SFT) & 0x1F;
+}
+
+/*-------------------------------------------------------------------------------
+Function:  WROD GetDeviceAddress()
+Purpose: Initiazing the devide
+Parameters: None
+Return: None
+Comments:  None
+Modified:
+<Modified by>
+<Date>
+<Change>
+--------------------------------------------------------------------------------*/
+
+WORD GetDeviceAddress()
+{
+    return g_nDeviceAddress;
+}
 
 /*-------------------------------------------------------------------------------
 Function:  VOID InitDevice()
@@ -121,6 +182,7 @@ VOID InitDevice(PVOID pDefinition)
 {
     WORD nLength = 0;
     g_pDefinition = (char*)pDefinition;
+    InitAddress();
     RegisterUartCallback(UART_DATA_EVENT, OnUartDataProc);
 
     for (BYTE nIndex = 0; nIndex < REGISTER_COUNT; nIndex++)
