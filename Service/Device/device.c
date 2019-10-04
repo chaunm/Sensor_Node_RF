@@ -18,6 +18,7 @@ Note: <Note>
 /*-----------------------------------------------------------------------------*/
 #include "uart.h"
 #include "timer.h"
+#include "stm32f0xx.h"
 #include "stm32f0xx_flash.h"
 #include "parameter.h"
 #include "system.h"
@@ -53,7 +54,7 @@ Note: <Note>
 #define PACKAGE_TYPE_DEFINITION_ACK     0x41
 #define PACKAGE_TYPE_DEFINITION_FINISH  0x42
 
-#define DEVICE_ADDRESS_GPIO_CLK         (RCC->AHBERN)
+#define DEVICE_ADDRESS_GPIO_CLK         (RCC->AHBENR)
 #define DEVICE_ADDRESS_GPIO_PORT        GPIOA
 #define DEVICE_ADDRESS_GPIO_CLK_EN      RCC_AHBENR_GPIOAEN
 #define DEVICE_ADDRESS_GPIO_PIN_1       GPIO_Pin_8

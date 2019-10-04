@@ -2,7 +2,7 @@
 #include "led-segment.h"
 #include "system.h"
 
-#define NUMBER_OF_LED   12
+#define NUMBER_OF_LED   6
 #define LED_GPIO_PORT	GPIOA
 #define LED_GPIO_CLK	(RCC->AHBENR)
 #define SHCP 			GPIO_Pin_6
@@ -35,7 +35,7 @@ static VOID ledSegmentOutput()
 VOID LedSegmentInit()
 {
   	GPIO_InitTypeDef gpioInitStruct;
-	// chaunm - need to initialize IO for controlling 74HC595
+	//  need to initialize IO for controlling 74HC595
 	LED_GPIO_CLK |= RCC_AHBENR_GPIOAEN; // enable GPIO clk
 	gpioInitStruct.GPIO_Mode = GPIO_Mode_OUT;
 	gpioInitStruct.GPIO_OType = GPIO_OType_PP;

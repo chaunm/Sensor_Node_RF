@@ -43,6 +43,7 @@ void main()
   	InitSystem();
 	InitFlash();
 	DebugLedStart();
+	AlarmInit();
   	OpenUartPort(UART_PORT_1, 9600);
 	LedSegmentInit();
   	InitDevice(NULL);

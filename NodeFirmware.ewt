@@ -3554,6 +3554,9 @@
         </settings>
     </configuration>
     <group>
+        <name>apps</name>
+    </group>
+    <group>
         <name>CMSIS</name>
         <file>
             <name>$PROJ_DIR$\CMSIS\stm32f0xx.h</name>
@@ -3569,6 +3572,12 @@
         <name>Driver</name>
         <group>
             <name>alarm</name>
+            <file>
+                <name>$PROJ_DIR$\Driver\alarm\alarm.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\Driver\alarm\alarm.h</name>
+            </file>
         </group>
         <group>
             <name>debug-led</name>
@@ -3590,6 +3599,15 @@
         </group>
         <group>
             <name>sensor</name>
+        </group>
+        <group>
+            <name>stwd100</name>
+            <file>
+                <name>$PROJ_DIR$\Driver\stwd100\stwd100.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\Driver\stwd100\stwd100.h</name>
+            </file>
         </group>
     </group>
     <group>
