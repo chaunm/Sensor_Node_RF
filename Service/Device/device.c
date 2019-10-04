@@ -439,7 +439,7 @@ INTERNAL VOID OnUartDataProc(PVOID pData)
     PUARTBUFFER pBuffer = (PUARTBUFFER) pData;
     PBYTE pDataRemote  = (PBYTE)(pBuffer->pData);
 	// chau nguyen - add return if address is different from my address
-	if (pBuffer->nAddr != g_nDeviceAddress;
+	if (pBuffer->nAddr != g_nDeviceAddress)
 		return;
 
     switch (pBuffer->nType)
