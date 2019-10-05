@@ -21,13 +21,14 @@
 
 #define TRIGGER_SHCP() { GPIO_ResetBits(LED_GPIO_PORT, SHCP); GPIO_SetBits(LED_GPIO_PORT, SHCP); }
 #define TRIGGER_STCP() { GPIO_ResetBits(LED_GPIO_PORT, STCP); GPIO_SetBits(LED_GPIO_PORT, STCP); }
-	
-BYTE ledData[NUMBER_OF_LED] = {0};
+
+INTERNAL BYTE font[10] = {0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07, 0x7F, 0x6F};
+INTERNAL BYTE ledData[NUMBER_OF_LED];
 
 VOID OutputToPortQ();
 VOID InitZeroDetect();
 
-static VOID ledSegmentOutput()
+INTERNAL VOID LedSegmentOutput()
 {
 	BYTE nDigit, byIndex;
     for (nDigit = 0; nDigit < NUMBER_OF_LED; nDigit++)
@@ -44,6 +45,12 @@ static VOID ledSegmentOutput()
 VOID LedSegmentInit()
 {
   	GPIO_InitTypeDef gpioInitStruct;
+	BYTE i;
+	// init display data
+	for (i = 0; i < NUMBER_OF_LED; i++)
+		ledData[i] = font[0];
+	ledData[1] |= 0x80;
+	ledData[4] |= 0x80;
 	//  need to initialize IO for controlling 74HC595
 	LED_GPIO_CLK |= RCC_AHBENR_GPIOAEN; // enable GPIO clk
 	gpioInitStruct.GPIO_Mode = GPIO_Mode_OUT;
@@ -59,7 +66,7 @@ VOID LedSegmentInit()
 	GPIO_SetBits(LED_GPIO_PORT, SHCP);
 	GPIO_SetBits(LED_GPIO_PORT, STCP);
 	GPIO_ResetBits(LED_GPIO_PORT, DS);
-	ledSegmentOutput();
+	LedSegmentOutput();
 }
 
 VOID LedSegmentUpdateData(PBYTE pData, BYTE nLength)
@@ -70,5 +77,17 @@ VOID LedSegmentUpdateData(PBYTE pData, BYTE nLength)
 	CopyMemory(ledData, pData, nDataCount);
 	for (i = nDataCount; i < NUMBER_OF_LED; i++)
 	  	ledData[i] = 0;
-	ledSegmentOutput();
+	LedSegmentOutput();
+}
+
+// display
+VOID LedSegmentDisplayMeasureValue(int16_t temp, uint16_t humi)
+{
+	ledData[0] = font[temp % 10];
+	ledData[1] = font[(temp / 10) % 10] | 0x80; // add DP
+	ledData[2] = font[temp / 100];
+	ledData[3] = font[humi % 10];
+	ledData[4] = font[(humi / 10) % 10] | 0x80;
+	ledData[5] = font[(humi / 100)];
+	LedSegmentOutput();
 }

@@ -6,25 +6,38 @@
 #include "parameter.h"
 #include "measure.h"
 #include "alarm.h"
+#include "led-segment.h"
 
 static ErrorStatus i2cStatus;
 static uint16_t humi;
 static int16_t temp;
+static uint16_t oldHumi;
+static int16_t oldTemp;
 
 VOID MeasureProcess(PVOID pData)
 {
+	oldTemp = temp;
 	i2cStatus = SensorReadTemperature(&temp);
 	if (i2cStatus == SUCCESS)
 	{
 		TEMP_HIGH = (BYTE)(temp >> 8);
 		TEMP_LOW = (BYTE)temp;
 	}
-	
+	else
+		
+	{
+		temp = oldTemp;
+	}
+	oldHumi = humi;
 	i2cStatus = SensorReadHumidity(&humi);
 	if (i2cStatus == SUCCESS)
 	{
 		HUMI_HIGH = (BYTE)(humi >> 8);
 		HUMI_LOW = (BYTE)humi;
+	}
+	else 
+	{
+		humi = oldHumi;
 	}
 	
 	if ((temp > MAX_TEMP) || (temp < MIN_TEMP) || (humi < MIN_HUMI) || (humi > MAX_HUMI))
@@ -43,6 +56,8 @@ VOID MeasureProcess(PVOID pData)
 			AlarmOff();
 		}
 	}
+	if ((oldTemp != temp) || (oldHumi != humi))
+		LedSegmentDisplayMeasureValue(temp, humi);
 	StartShortTimer(MEASURE_PERIOD_MS, MeasureProcess, NULL);
 }
 

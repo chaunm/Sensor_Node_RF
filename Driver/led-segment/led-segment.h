@@ -8,5 +8,6 @@
 
 VOID LedSegmentInit();
 VOID LedSegmentUpdateData(PBYTE pData, BYTE nLength);
+VOID LedSegmentDisplayMeasureValue(int16_t temp, uint16_t humi);
 
 #endif //__LED_SEGMENT_H__
