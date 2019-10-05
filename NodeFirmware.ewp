@@ -227,6 +227,7 @@
                     <state>STM32F030</state>
                     <state>FLASH_32K</state>
                     <state>FLASH_PAGE_1K</state>
+                    <state>SENSOR_HTS221</state>
                     <state>USE_STDPERIPH_DRIVER</state>
                 </option>
                 <option>
@@ -362,11 +363,16 @@
                     <state>$PROJ_DIR$\Hardware\System</state>
                     <state>$PROJ_DIR$\Hardware\UART</state>
                     <state>$PROJ_DIR$\Hardware\watchdog</state>
+                    <state>$PROJ_DIR$\Hardware\i2c</state>
                     <state>$PROJ_DIR$\CMSIS</state>
                     <state>$PROJ_DIR$\CMSIS\Include</state>
                     <state>$PROJ_DIR$\STM32F0xx_StdPeriph_Driver\inc</state>
                     <state>$PROJ_DIR$\Driver\led-segment</state>
                     <state>$PROJ_DIR$\Driver\debug-led</state>
+                    <state>$PROJ_DIR$\Driver\alarm</state>
+                    <state>$PROJ_DIR$\Driver\sensor</state>
+                    <state>$PROJ_DIR$\Driver\stwd100</state>
+                    <state>$PROJ_DIR$\apps</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -785,7 +791,7 @@
                 </option>
                 <option>
                     <name>IlinkIcfFile</name>
-                    <state>$PROJ_DIR$\stm32f030x6_flash.icf</state>
+                    <state>$PROJ_DIR$\CMSIS\stm32f030x6_flash.icf</state>
                 </option>
                 <option>
                     <name>IlinkIcfFileSlave</name>
@@ -2346,6 +2352,7 @@
                     <state>STM32F091</state>
                     <state>HIGHFLASH_256</state>
                     <state>FLASH_PAGE_2K</state>
+                    <state>SENSOR_HTS221</state>
                     <state>USE_STDPERIPH_DRIVER</state>
                 </option>
                 <option>
@@ -2481,6 +2488,7 @@
                     <state>$PROJ_DIR$\Hardware\System</state>
                     <state>$PROJ_DIR$\Hardware\UART</state>
                     <state>$PROJ_DIR$\Hardware\watchdog</state>
+                    <state>$PROJ_DIR$\Hardware\i2c</state>
                     <state>$PROJ_DIR$\CMSIS</state>
                     <state>$PROJ_DIR$\CMSIS\Include</state>
                     <state>$PROJ_DIR$\STM32F0xx_StdPeriph_Driver\inc</state>
@@ -2489,6 +2497,7 @@
                     <state>$PROJ_DIR$\Driver\alarm</state>
                     <state>$PROJ_DIR$\Driver\sensor</state>
                     <state>$PROJ_DIR$\Driver\stwd100</state>
+                    <state>$PROJ_DIR$\apps</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -2788,7 +2797,7 @@
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state></state>
+                    <state>NodeFirmware.srec</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -3193,9 +3202,42 @@
     </configuration>
     <group>
         <name>apps</name>
+        <file>
+            <name>$PROJ_DIR$\apps\device-desc.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\apps\device-parameter.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\apps\device-parameter.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\apps\device-registers.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\apps\device-registers.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\apps\measure.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\apps\measure.h</name>
+        </file>
     </group>
     <group>
         <name>CMSIS</name>
+        <file>
+            <name>$PROJ_DIR$\CMSIS\startup_stm32f030x6.s</name>
+            <excluded>
+                <configuration>Debug_F091</configuration>
+            </excluded>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\CMSIS\startup_stm32f091.s</name>
+            <excluded>
+                <configuration>Debug</configuration>
+            </excluded>
+        </file>
         <file>
             <name>$PROJ_DIR$\CMSIS\stm32f0xx.h</name>
         </file>
@@ -3237,6 +3279,15 @@
         </group>
         <group>
             <name>sensor</name>
+            <file>
+                <name>$PROJ_DIR$\Driver\sensor\hts221.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\Driver\sensor\hts221.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\Driver\sensor\sensor.h</name>
+            </file>
         </group>
         <group>
             <name>stwd100</name>
@@ -3260,6 +3311,15 @@
             </file>
         </group>
         <group>
+            <name>i2c</name>
+            <file>
+                <name>$PROJ_DIR$\Hardware\i2c\i2c.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\Hardware\i2c\i2c.h</name>
+            </file>
+        </group>
+        <group>
             <name>System</name>
             <file>
                 <name>$PROJ_DIR$\Hardware\System\system.c</name>
@@ -3280,6 +3340,7 @@
         <group>
             <name>Watchdog</name>
             <excluded>
+                <configuration>Debug</configuration>
                 <configuration>Debug_F091</configuration>
             </excluded>
             <file>
@@ -3477,25 +3538,7 @@
         </group>
     </group>
     <file>
-        <name>$PROJ_DIR$\device-desc.h</name>
-    </file>
-    <file>
         <name>$PROJ_DIR$\main.c</name>
-    </file>
-    <file>
-        <name>$PROJ_DIR$\CMSIS\startup_stm32f030x6.s</name>
-        <excluded>
-            <configuration>Debug_F091</configuration>
-        </excluded>
-    </file>
-    <file>
-        <name>$PROJ_DIR$\startup_stm32f091.s</name>
-        <excluded>
-            <configuration>Debug</configuration>
-        </excluded>
-    </file>
-    <file>
-        <name>$PROJ_DIR$\stm32f030x6_flash.icf</name>
     </file>
     <file>
         <name>$PROJ_DIR$\stm32f0xx_conf.h</name>

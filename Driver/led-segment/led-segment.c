@@ -3,14 +3,23 @@
 #include "system.h"
 
 #define NUMBER_OF_LED   6
+#ifdef STM32F091
 #define LED_GPIO_PORT	GPIOA
 #define LED_GPIO_CLK	(RCC->AHBENR)
 #define SHCP 			GPIO_Pin_6
-#define STCP 			GPIO_Pin_8//GPIO_Pin_5 - board chinh
+#define STCP 			GPIO_Pin_4
 #define DS   			GPIO_Pin_7
+#endif
+
+#ifdef STM32F030
+#define LED_GPIO_PORT	GPIOA
+#define LED_GPIO_CLK	(RCC->AHBENR)
+#define SHCP 			GPIO_Pin_6
+#define STCP 			GPIO_Pin_5
+#define DS   			GPIO_Pin_7
+#endif
 
 #define TRIGGER_SHCP() { GPIO_ResetBits(LED_GPIO_PORT, SHCP); GPIO_SetBits(LED_GPIO_PORT, SHCP); }
-
 #define TRIGGER_STCP() { GPIO_ResetBits(LED_GPIO_PORT, STCP); GPIO_SetBits(LED_GPIO_PORT, STCP); }
 	
 BYTE ledData[NUMBER_OF_LED] = {0};

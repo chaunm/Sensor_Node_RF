@@ -3555,9 +3555,36 @@
     </configuration>
     <group>
         <name>apps</name>
+        <file>
+            <name>$PROJ_DIR$\apps\device-desc.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\apps\device-parameter.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\apps\device-parameter.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\apps\device-registers.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\apps\device-registers.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\apps\measure.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\apps\measure.h</name>
+        </file>
     </group>
     <group>
         <name>CMSIS</name>
+        <file>
+            <name>$PROJ_DIR$\CMSIS\startup_stm32f030x6.s</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\CMSIS\startup_stm32f091.s</name>
+        </file>
         <file>
             <name>$PROJ_DIR$\CMSIS\stm32f0xx.h</name>
         </file>
@@ -3599,6 +3626,15 @@
         </group>
         <group>
             <name>sensor</name>
+            <file>
+                <name>$PROJ_DIR$\Driver\sensor\hts221.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\Driver\sensor\hts221.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\Driver\sensor\sensor.h</name>
+            </file>
         </group>
         <group>
             <name>stwd100</name>
@@ -3619,6 +3655,15 @@
             </file>
             <file>
                 <name>$PROJ_DIR$\Hardware\Flash\flash.h</name>
+            </file>
+        </group>
+        <group>
+            <name>i2c</name>
+            <file>
+                <name>$PROJ_DIR$\Hardware\i2c\i2c.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\Hardware\i2c\i2c.h</name>
             </file>
         </group>
         <group>
@@ -3836,19 +3881,7 @@
         </group>
     </group>
     <file>
-        <name>$PROJ_DIR$\device-desc.h</name>
-    </file>
-    <file>
         <name>$PROJ_DIR$\main.c</name>
-    </file>
-    <file>
-        <name>$PROJ_DIR$\CMSIS\startup_stm32f030x6.s</name>
-    </file>
-    <file>
-        <name>$PROJ_DIR$\startup_stm32f091.s</name>
-    </file>
-    <file>
-        <name>$PROJ_DIR$\stm32f030x6_flash.icf</name>
     </file>
     <file>
         <name>$PROJ_DIR$\stm32f0xx_conf.h</name>

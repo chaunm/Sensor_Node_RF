@@ -102,7 +102,7 @@ INTERNAL SYSTEMCALLBACK g_pDeviceEvents[DEVICE_EVENT_COUNT] = { NULL };
 /*-----------------------------------------------------------------------------*/
 /* Function prototypes */
 /*-----------------------------------------------------------------------------*/
-INTERNAL VOID RequireRegisterInstruction(PVOID pData);
+//INTERNAL VOID RequireRegisterInstruction(PVOID pData);
 INTERNAL VOID PopulateRegisters();
 INTERNAL VOID OnUartDataProc(PVOID pData);
 INTERNAL VOID ProcessInstruction(PREGISTEREVENT pEvent);
@@ -398,10 +398,10 @@ Modified:
 <Date> 
 <Change> 
 --------------------------------------------------------------------------------*/
-INTERNAL VOID RequireRegisterInstruction(PVOID pData)
-{
-    SendCommand(PACKAGE_TYPE_REQUIRE_REGISTTER, 0x00);
-}
+//INTERNAL VOID RequireRegisterInstruction(PVOID pData)
+//{
+//    SendCommand(PACKAGE_TYPE_REQUIRE_REGISTTER, 0x00);
+//}
 /*-------------------------------------------------------------------------------
 Function: PopulateRegisters()
 Purpose: Populate the registers
@@ -438,7 +438,7 @@ INTERNAL VOID OnUartDataProc(PVOID pData)
 {
     PUARTBUFFER pBuffer = (PUARTBUFFER) pData;
     PBYTE pDataRemote  = (PBYTE)(pBuffer->pData);
-	// chau nguyen - add return if address is different from my address
+	// chau nguyen - add return if address is different from my address - done
 	if (pBuffer->nAddr != g_nDeviceAddress)
 		return;
 
@@ -672,7 +672,7 @@ INTERNAL VOID AllocatedBuffer(BYTE nType, PVOID pData, BYTE nLength)
 
     g_arBufferDevice[g_nPendingBufferCount].nLength = nLength;
     g_arBufferDevice[g_nPendingBufferCount].nType = nType;
-    g_arBufferDevice[g_nPendingBufferCount].nAddr = GetDeviceAddress(); // address of device = chau nguyen
+    g_arBufferDevice[g_nPendingBufferCount].nAddr = GetDeviceAddress(); // address of device - chau nguyen - done
 
     for (BYTE nCount = 0; nCount < nLength; nCount++)
     {

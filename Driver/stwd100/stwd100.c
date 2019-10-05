@@ -7,7 +7,7 @@
 #define WD_GPIO_CLK 		(RCC->AHBENR)
 #define WD_GPIO_CLK_EN		RCC_AHBENR_GPIOAEN
 #define WD_GPIO_PORT		GPIOA
-#define WD_GPIO_PIN			GPIO_Pin_6
+#define WD_GPIO_PIN			GPIO_Pin_3
 #endif
 
 #ifdef STM32F030
