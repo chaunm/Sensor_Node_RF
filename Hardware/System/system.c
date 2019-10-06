@@ -82,13 +82,16 @@ VOID InitSystem(VOID)
 {
   // chaunm - check xem co can move vector sang RAM hay khong
 #ifdef INTERRUPT_VECTOR_RAM
+	__disable_irq();
     // Copy vector table from flash to the base addr of sram at 0x20000000
     for (BYTE nIndex = 0; nIndex < VECTOR_INTERRUPT_COUNT; nIndex++)
     {
         VectorTable[nIndex] = *(__IO PDWORD)(APPLICATION_ADDRESS + (nIndex << 2));
     }
     // Relocate the vector table to internal SRAM at 0x20000000
-    MemoryRemapConfig(MemoryRemap_SRAM);
+	// enable clock
+	RCC->APB2ENR |= (DWORD)0x01;
+    SYSCFG_MemoryRemapConfig(SYSCFG_MemoryRemap_SRAM);
 #endif // RELEASE
 	__enable_irq();
     //Init clock and hardware
@@ -153,7 +156,7 @@ Modified:
 VOID Reboot(PVOID pParam)
 {
     NVIC_SystemReset();
-	/* chaunm - need to check
+	/* chau nguyen - need to check
     SYSTEMCALLBACK fnJumpToIAP;
     DWORD nJumpAddress = 0x00;
 

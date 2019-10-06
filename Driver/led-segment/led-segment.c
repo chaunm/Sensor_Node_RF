@@ -19,14 +19,24 @@
 #define DS   			GPIO_Pin_7
 #endif
 
-#define TRIGGER_SHCP() { GPIO_ResetBits(LED_GPIO_PORT, SHCP); GPIO_SetBits(LED_GPIO_PORT, SHCP); }
-#define TRIGGER_STCP() { GPIO_ResetBits(LED_GPIO_PORT, STCP); GPIO_SetBits(LED_GPIO_PORT, STCP); }
+#define TRIGGER_SHCP() { GPIO_ResetBits(LED_GPIO_PORT, SHCP); LedSegmentDelay(); GPIO_SetBits(LED_GPIO_PORT, SHCP); }
+#define TRIGGER_STCP() { GPIO_ResetBits(LED_GPIO_PORT, STCP); LedSegmentDelay(); GPIO_SetBits(LED_GPIO_PORT, STCP); }
 
 INTERNAL BYTE font[10] = {0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07, 0x7F, 0x6F};
 INTERNAL BYTE ledData[NUMBER_OF_LED];
 
 VOID OutputToPortQ();
 VOID InitZeroDetect();
+
+#pragma optimize=none
+VOID LedSegmentDelay()
+{
+	asm("nop");
+	asm("nop");
+	asm("nop");
+	asm("nop");
+	asm("nop");
+}
 
 INTERNAL VOID LedSegmentOutput()
 {
@@ -35,12 +45,13 @@ INTERNAL VOID LedSegmentOutput()
 	{
 	  	for (byIndex = 8; byIndex > 0; byIndex --)
 	  	{
-			GPIO_WriteBit(LED_GPIO_PORT, DS, (BitAction)CHECK_BIT(ledData[nDigit], (byIndex -1)));
+			GPIO_WriteBit(LED_GPIO_PORT, DS, (BitAction)CHECK_BIT(ledData[nDigit], (byIndex - 1)));
 			TRIGGER_SHCP();
 	  	}
 	}
     TRIGGER_STCP();
 }
+
 
 VOID LedSegmentInit()
 {
@@ -83,11 +94,29 @@ VOID LedSegmentUpdateData(PBYTE pData, BYTE nLength)
 // display
 VOID LedSegmentDisplayMeasureValue(int16_t temp, uint16_t humi)
 {
-	ledData[0] = font[temp % 10];
-	ledData[1] = font[(temp / 10) % 10] | 0x80; // add DP
-	ledData[2] = font[temp / 100];
-	ledData[3] = font[humi % 10];
-	ledData[4] = font[(humi / 10) % 10] | 0x80;
-	ledData[5] = font[(humi / 100)];
+	if (temp < 100)
+	{
+		ledData[0] = font[temp % 10];
+		ledData[1] = font[(temp / 10) % 10] | 0x80; // add DP
+		ledData[2] = font[temp / 100];
+	}
+	else
+	{
+		ledData[0] = font[0];
+		ledData[1] = font[0];
+		ledData[2] = font[1];
+	}
+	if (humi < 100)
+	{
+		ledData[3] = font[humi % 10];
+		ledData[4] = font[(humi / 10) % 10] | 0x80;
+		ledData[5] = font[(humi / 100)];
+	}
+	else
+	{
+		ledData[0] = font[0];
+		ledData[1] = font[0];
+		ledData[2] = font[1];
+	}
 	LedSegmentOutput();
 }

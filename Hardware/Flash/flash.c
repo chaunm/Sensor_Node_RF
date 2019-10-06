@@ -138,11 +138,13 @@ Modified:
 VOID ReadFlash(PVOID pBuffer, WORD nSize, WORD nAddr)
 {
 	PDWORD pDest = (PDWORD)pBuffer;
+	uint32_t value;
 	if ((nSize % 4) != 0)
 	  	return;
 	while (nSize > 0)
 	{
-	  	*pDest = (DWORD)(*(PDWORD)FlashToMemory(BLOCK_TO_ADDR(nAddr)));
+		value = (DWORD)(*(PDWORD)FlashToMemory((nAddr)));
+	  	*pDest = value;
 		nAddr++;
 		pDest++;
 		nSize -= 4;

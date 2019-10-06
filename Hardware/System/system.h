@@ -31,8 +31,17 @@ Note: <Note>
 /*-----------------------------------------------------------------------------*/
 /* Macro definitions  */
 /*-----------------------------------------------------------------------------*/
-#define APPLICATION_ADDRESS     (DWORD)0x08002000 // chaunm - need to check the boot loader - using other form of bootloader
-#define BOOTLOADER_ADDRESS      (DWORD)0x08000000
+#ifdef RELEASE
+#ifdef FLASH_32
+#define APPLICATION_ADDRESS     (DWORD)0x08000800 
+#endif
+#ifdef HIGHFLASH_256
+#define APPLICATION_ADDRESS     (DWORD)0x08001000 
+#endif
+#endif
+#ifdef DEBUG
+#define APPLICATION_ADDRESS     (DWORD)0x08000000
+#endif
 /*-----------------------------------------------------------------------------*/
 /* Global variables  */
 /*-----------------------------------------------------------------------------*/

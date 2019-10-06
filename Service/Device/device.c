@@ -505,7 +505,7 @@ INTERNAL VOID OnUartDataProc(PVOID pData)
 
  	case PACKAGE_TYPE_DEVICE_FLASH: // need to change here to process flash write  - chau nguyen
 		FLASH_Unlock();
-		FLASH_ProgramHalfWord(APPLICATION_ADDRESS, 0x00);
+//		FLASH_ProgramHalfWord(APPLICATION_ADDRESS, 0x00);
 		FLASH_Lock();
 //		ResetParams();
 //		StartShortTimer(500, Reboot, NULL);

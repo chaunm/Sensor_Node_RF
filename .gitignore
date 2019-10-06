@@ -1,5 +1,8 @@
 Debug
 Release
+Image
 settings
 Debug_F091
+Image_F091
+Release_F091
 *.dep

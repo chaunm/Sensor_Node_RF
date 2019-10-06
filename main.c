@@ -33,7 +33,6 @@ void main()
   	InitDevice(NULL);
 	InitRegister();
 	InitParameter(DefineParamProc);
-	
 	RegisterDeviceCallback(DEVICE_REGISTER_EVENT, OnDeviceRegisterProc);
 	RegisterParamCallback(PARAM_CHANGE_EVENT, ParamChangeProc);	
   	while(1)
