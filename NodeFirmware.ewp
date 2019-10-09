@@ -5477,6 +5477,12 @@
             <file>
                 <name>$PROJ_DIR$\Driver\sensor\sensor.h</name>
             </file>
+            <file>
+                <name>$PROJ_DIR$\Driver\sensor\sht3x.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\Driver\sensor\sht3x.h</name>
+            </file>
         </group>
         <group>
             <name>stwd100</name>
