@@ -262,7 +262,7 @@ VOID WriteUartIndirect(BYTE nPort, PUARTBUFFER pUartBuffer)
 	USART_WriteByte(USARTx, 0xFF);
 	while (USART_GetFlagStatus(USARTx, USART_FLAG_TXE) == RESET);
 	
-	USART_WriteByte(USARTx, 0x03); // RF channel
+	USART_WriteByte(USARTx, 0x17); // RF channel
 	while (USART_GetFlagStatus(USARTx, USART_FLAG_TXE) == RESET);
 	
     USART_WriteByte(USARTx, PACKAGE_START_BYTE);

@@ -13,6 +13,7 @@
 #include "stwd100.h"
 #include "sensor.h"
 #include "measure.h"
+#include "e32xxx.h"
 #include "device-registers.h"
 #include "device-parameter.h"
 
@@ -23,6 +24,7 @@ void main()
 	StwdStart();
   	InitSystem();
 	InitFlash();
+	RfInit();
 	DebugLedStart();
 	AlarmInit();
   	OpenUartPort(UART_PORT_1, 9600);

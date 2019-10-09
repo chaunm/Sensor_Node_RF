@@ -6002,6 +6002,15 @@
             </file>
         </group>
         <group>
+            <name>rf</name>
+            <file>
+                <name>$PROJ_DIR$\Driver\rf\e32xxx.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\Driver\rf\e32xxx.h</name>
+            </file>
+        </group>
+        <group>
             <name>sensor</name>
             <file>
                 <name>$PROJ_DIR$\Driver\sensor\hts221.c</name>

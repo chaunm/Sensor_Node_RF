@@ -1446,6 +1446,7 @@
                     <state>$PROJ_DIR$\Driver\led-segment</state>
                     <state>$PROJ_DIR$\Driver\debug-led</state>
                     <state>$PROJ_DIR$\Driver\alarm</state>
+                    <state>$PROJ_DIR$\Driver\rf</state>
                     <state>$PROJ_DIR$\Driver\sensor</state>
                     <state>$PROJ_DIR$\Driver\stwd100</state>
                     <state>$PROJ_DIR$\apps</state>
@@ -4672,6 +4673,7 @@
                     <state>$PROJ_DIR$\Driver\led-segment</state>
                     <state>$PROJ_DIR$\Driver\debug-led</state>
                     <state>$PROJ_DIR$\Driver\alarm</state>
+                    <state>$PROJ_DIR$\Driver\rf</state>
                     <state>$PROJ_DIR$\Driver\sensor</state>
                     <state>$PROJ_DIR$\Driver\stwd100</state>
                     <state>$PROJ_DIR$\apps</state>
@@ -5464,6 +5466,15 @@
             </file>
             <file>
                 <name>$PROJ_DIR$\Driver\led-segment\led-segment.h</name>
+            </file>
+        </group>
+        <group>
+            <name>rf</name>
+            <file>
+                <name>$PROJ_DIR$\Driver\rf\e32xxx.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\Driver\rf\e32xxx.h</name>
             </file>
         </group>
         <group>
