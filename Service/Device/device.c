@@ -25,6 +25,7 @@ Note: <Note>
 #include "string.h"
 #include "devicedef.h"
 #include "device.h"
+#include "ota.h"
 /*-----------------------------------------------------------------------------*/
 /* Local Macro definitions */
 /*-----------------------------------------------------------------------------*/
@@ -504,12 +505,7 @@ INTERNAL VOID OnUartDataProc(PVOID pData)
         break;
 
  	case PACKAGE_TYPE_DEVICE_FLASH: // need to change here to process flash write  - chau nguyen
-		FLASH_Unlock();
-//		FLASH_ProgramHalfWord(APPLICATION_ADDRESS, 0x00);
-		FLASH_Lock();
-//		ResetParams();
-//		StartShortTimer(500, Reboot, NULL);
-//		ResetDevice();
+		Ota_ProcessFlashPackage(pBuffer);
 		break;
 //#endif
 
