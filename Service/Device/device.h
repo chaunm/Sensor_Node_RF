@@ -73,6 +73,7 @@ VOID RestoreRegister();
 BOOL IsConnected();
 BOOL GetTickFlag();
 VOID ClearTickFlag();
+WORD GetDeviceAddress();
 /* 
 To send command reset wifi module SendCommand(PAKAGE_TYPE_WIFI_COMMAND, RESET_WIFI_MODULE);
 To send command reflash wifi module SendCommand(PAKAGE_TYPE_WIFI_COMMAND, REFLASH_WIFI_MODULE);
