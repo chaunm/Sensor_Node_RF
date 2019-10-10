@@ -39,3 +39,8 @@ VOID StwdStart()
     GPIO_Init(WD_GPIO_PORT, &gpioInitStruct);
 	StwdToggle(NULL);
 }
+
+VOID StwdManualToggle()
+{
+	GPIO_WriteBit(WD_GPIO_PORT, WD_GPIO_PIN, (BitAction)(1 - GPIO_ReadInputDataBit(WD_GPIO_PORT, WD_GPIO_PIN)));
+}
