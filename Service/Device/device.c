@@ -150,6 +150,7 @@ INTERNAL VOID InitAddress()
     gpioInitStruct.GPIO_Pin = DEVICE_ADDRESS_GPIO_PIN_5;
     GPIO_Init(DEVICE_ADDRESS_GPIO_PORT, &gpioInitStruct);
     g_nDeviceAddress = (((WORD)GPIO_ReadInputData(DEVICE_ADDRESS_GPIO_PORT)) >> DEVICE_ADDRESS_PORT_SFT) & 0x1F;
+	g_nDeviceAddress += 32; // plus 32 to avoid low address 0/1 for gateway
 }
 
 /*-------------------------------------------------------------------------------

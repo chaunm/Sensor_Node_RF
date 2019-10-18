@@ -26,9 +26,14 @@
 #define I2C_PIN_AF					GPIO_AF_1
 #endif
 
+#ifdef SENSOR_HTS221
 #define TIMING_8MHZ					0x00901D36
 #define TIMING_48MHZ				0x30E32E37
+#endif
 
+#ifdef SENSOR_SHT30
+#define TIMING_48MHZ				0x60100839
+#endif
 static BOOL isI2COpen = FALSE;
 
 VOID I2C_Open()

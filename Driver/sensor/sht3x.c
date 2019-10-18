@@ -183,7 +183,7 @@ INTERNAL VOID SHT3X_ReadData(PVOID pData)
 * @param  None
 * @retval None
 */
-ErrorStatus SHT3x_Init()
+ErrorStatus SHT3X_Init()
 {  
 	BYTE dataNum;
 	BYTE sht3xRstCmd[2] = SHT3X_CMD_RESET;
@@ -211,10 +211,10 @@ ErrorStatus SHT3x_Init()
 	{
 		/* Wait until TXIS flag is set */
 		SHT3xTimeout = SHT3X_LONG_TIMEOUT;
-		while(I2C_GetFlagStatus(SHT3X_I2C, I2C_ISR_TXIS) == RESET)    
+//		while(I2C_GetFlagStatus(SHT3X_I2C, I2C_ISR_TXIS) == RESET)    
 		{
-			if((SHT3xTimeout--) == 0) 
-				return ERROR;
+			while((SHT3xTimeout--) == 0) ;
+//				return ERROR;
 		}		
 		/* Send command */
 		I2C_SendData(SHT3X_I2C, sht3xRstCmd[dataNum]);
@@ -271,7 +271,7 @@ ErrorStatus SHT3x_Init()
 	return SUCCESS;
 }
 
-ErrorStatus SHT3X__GetTemperature(int16_t* value)
+ErrorStatus SHT3X_GetTemperature(int16_t* value)
 {
 	//  Conversion of raw values into a physical scale
     float temp = rawTemp;
@@ -281,7 +281,7 @@ ErrorStatus SHT3X__GetTemperature(int16_t* value)
 }
 
 
-ErrorStatus SHT3X__GetHumidity(uint16_t* value)
+ErrorStatus SHT3X_GetHumidity(uint16_t* value)
 {
 	//  Conversion of raw values into a physical scale
     float humi = rawHumi;

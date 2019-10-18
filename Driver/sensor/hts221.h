@@ -40,5 +40,6 @@ ErrorStatus HTS221_GetStatus(void);
 ErrorStatus HTS221_Init();
 ErrorStatus HTS221_GetTemperature(int16_t* value);
 ErrorStatus HTS221_GetHumidity(uint16_t* value);
+ErrorStatus HTS221_GetData(int16_t* temp, uint16_t* humi);
 
 #endif // __HTS221_H__

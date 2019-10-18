@@ -44,7 +44,7 @@ VOID Ota_ProcessFlashPackage(PUARTBUFFER pBuffer)
     }
 
     // length valid
-    if (pFlash->flag = FIRST_BLOCK)
+    if (pFlash->flag == FIRST_BLOCK)
     {
         flashFailed = FALSE;
         //prepare flash for writing data

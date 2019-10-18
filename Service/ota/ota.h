@@ -35,5 +35,5 @@ typedef struct tagFLASHRESPONSE {
     BYTE status; 
 } FLASHRESPONSE, *PFLASHRESPONSE;
 
-VOID Ota_ProcessFlashPackage(PUARTBUFFER pBuffer)
+VOID Ota_ProcessFlashPackage(PUARTBUFFER pBuffer);
 #endif // __OTA_H__

@@ -11,9 +11,9 @@ typedef struct stSHT3XDATA
 } SHT3XDATA, *PSHT3XDATA;
 
 #define SHT3X_FLAG_TIMEOUT         ((uint32_t)0x1000)
-#define SHT3X_LONG_TIMEOUT         ((uint32_t)(10 * SHT3X_FLAG_TIMEOUT)) 
+#define SHT3X_LONG_TIMEOUT         ((uint32_t)(100 * SHT3X_FLAG_TIMEOUT)) 
 
-ErrorStatus SHT3x_Init();
+ErrorStatus SHT3X_Init();
 ErrorStatus SHT3X_GetTemperature(int16_t* value);
 ErrorStatus SHT3X_GetHumidity(uint16_t* value);
 

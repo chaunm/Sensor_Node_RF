@@ -386,3 +386,11 @@ ErrorStatus HTS221_GetHumidity(uint16_t* value)
 	if(*value>1000) *value = 1000;
 	return SUCCESS;
 }
+
+ErrorStatus HTS221_GetData(int16_t* temp, uint16_t* humi)
+{
+	ErrorStatus error;
+	error = HTS221_GetTemperature(temp);
+	error &= HTS221_GetHumidity(humi);
+	return error;
+}

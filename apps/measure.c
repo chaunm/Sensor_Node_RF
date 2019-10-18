@@ -9,37 +9,28 @@
 #include "led-segment.h"
 
 static ErrorStatus i2cStatus;
-static uint16_t humi;
-static int16_t temp;
+uint16_t humi;
+int16_t temp;
 static uint16_t oldHumi;
 static int16_t oldTemp;
 
 VOID MeasureProcess(PVOID pData)
 {
 	oldTemp = temp;
-	i2cStatus = SensorReadTemperature(&temp);
+	oldHumi = humi;
+	i2cStatus = SensorGetData(&temp, &humi);
 	if (i2cStatus == SUCCESS)
 	{
 		TEMP_HIGH = (BYTE)(temp >> 8);
 		TEMP_LOW = (BYTE)temp;
-	}
-	else
-		
-	{
-		temp = oldTemp;
-	}
-	oldHumi = humi;
-	i2cStatus = SensorReadHumidity(&humi);
-	if (i2cStatus == SUCCESS)
-	{
 		HUMI_HIGH = (BYTE)(humi >> 8);
 		HUMI_LOW = (BYTE)humi;
 	}
-	else 
+	else		
 	{
+		temp = oldTemp;
 		humi = oldHumi;
-	}
-	
+	}	
 	if ((temp > MAX_TEMP) || (temp < MIN_TEMP) || (humi < MIN_HUMI) || (humi > MAX_HUMI))
 	{
 		if (ALARM == 0)
