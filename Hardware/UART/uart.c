@@ -256,14 +256,14 @@ VOID WriteUartIndirect(BYTE nPort, PUARTBUFFER pUartBuffer)
 	}
 	// chau nguyen - need to add header for RF here - done
 	/* header for RF Module - broadcast type 0xFFFF + channel*/
-	USART_WriteByte(USARTx, 0xFF);
-	while (USART_GetFlagStatus(USARTx, USART_FLAG_TXE) == RESET);
-	
-	USART_WriteByte(USARTx, 0xFF);
-	while (USART_GetFlagStatus(USARTx, USART_FLAG_TXE) == RESET);
-	
-	USART_WriteByte(USARTx, 0x17); // RF channel
-	while (USART_GetFlagStatus(USARTx, USART_FLAG_TXE) == RESET);
+//	USART_WriteByte(USARTx, 0xFF);
+//	while (USART_GetFlagStatus(USARTx, USART_FLAG_TXE) == RESET);
+//	
+//	USART_WriteByte(USARTx, 0xFF);
+//	while (USART_GetFlagStatus(USARTx, USART_FLAG_TXE) == RESET);
+//	
+//	USART_WriteByte(USARTx, 0x17); // RF channel
+//	while (USART_GetFlagStatus(USARTx, USART_FLAG_TXE) == RESET);
 	
     USART_WriteByte(USARTx, PACKAGE_START_BYTE);
     while (USART_GetFlagStatus(USARTx, USART_FLAG_TXE) == RESET);
