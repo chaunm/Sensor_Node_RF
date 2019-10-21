@@ -31,21 +31,32 @@ VOID MeasureProcess(PVOID pData)
 		temp = oldTemp;
 		humi = oldHumi;
 	}	
-	if ((temp > MAX_TEMP) || (temp < MIN_TEMP) || (humi < MIN_HUMI) || (humi > MAX_HUMI))
+	if ((temp > MAX_TEMP) || (temp < MIN_TEMP))
 	{
-		if (ALARM == 0)
-		{
-			ALARM = 1;
-			AlarmOn();
-		}
+		TEMP_ALARM = 1;
 	}
 	else
 	{
-		if (ALARM == 1)
-		{
-			ALARM = 0;
-			AlarmOff();
-		}
+		TEMP_ALARM = 0;
+	}
+	if ((humi > MAX_HUMI) || (humi < MIN_HUMI))
+	{
+		HUMI_ALARM = 1;
+	}
+	else
+	{
+		HUMI_ALARM = 0;
+	}
+	if ((TEMP_ALARM ==  1) || (HUMI_ALARM == 1))
+	{
+		ALARM = 1;
+		if (ALARM_ENABLE == 1)
+			AlarmOn();
+	}
+	else 
+	{
+		ALARM = 0;
+		AlarmOff();
 	}
 	if ((oldTemp != temp) || (oldHumi != humi))
 		LedSegmentDisplayMeasureValue(temp, humi);
