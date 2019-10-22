@@ -27,11 +27,11 @@ void main()
 	RfInit();
 	DebugLedStart();
 	AlarmInit();
+	LedSegmentInit();
   	OpenUartPort(UART_PORT_1, 9600);
 	i2cStatus = SensorInit();
 	if (i2cStatus == SUCCESS)
-		StartShortTimer(1000, MeasureProcess, NULL);
-	LedSegmentInit();
+		StartShortTimer(3000, MeasureProcess, NULL);
   	InitDevice(NULL);
 	InitRegister();
 	InitParameter(DefineParamProc);

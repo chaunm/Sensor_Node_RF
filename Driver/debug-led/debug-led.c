@@ -32,6 +32,7 @@ VOID DebugLedStart()
  	gpioInitStruct.GPIO_Pin = DEBUG_LED_GPIO_PIN;
 	gpioInitStruct.GPIO_Mode = GPIO_Mode_OUT; 
     gpioInitStruct.GPIO_OType = GPIO_OType_PP;
+	gpioInitStruct.GPIO_PuPd = GPIO_PuPd_NOPULL;
     gpioInitStruct.GPIO_Speed = GPIO_Speed_Level_1;
     GPIO_Init(DEBUG_LED_GPIO_PORT, &gpioInitStruct);
 	DebugLedBlink(NULL);

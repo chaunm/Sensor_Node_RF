@@ -36,6 +36,10 @@ VOID LedSegmentDelay()
 	asm("nop");
 	asm("nop");
 	asm("nop");
+	asm("nop");
+	asm("nop");
+	asm("nop");
+	asm("nop");	
 }
 
 INTERNAL VOID LedSegmentOutput()
@@ -47,6 +51,7 @@ INTERNAL VOID LedSegmentOutput()
 	  	{
 			GPIO_WriteBit(LED_GPIO_PORT, DS, (BitAction)CHECK_BIT(ledData[nDigit], (byIndex - 1)));
 			TRIGGER_SHCP();
+			LedSegmentDelay();
 	  	}
 	}
     TRIGGER_STCP();
@@ -59,7 +64,7 @@ VOID LedSegmentInit()
 	BYTE i;
 	// init display data
 	for (i = 0; i < NUMBER_OF_LED; i++)
-		ledData[i] = font[0];
+		ledData[i] = 0xFF;
 	ledData[1] |= 0x80;
 	ledData[4] |= 0x80;
 	//  need to initialize IO for controlling 74HC595
@@ -94,7 +99,7 @@ VOID LedSegmentUpdateData(PBYTE pData, BYTE nLength)
 // display
 VOID LedSegmentDisplayMeasureValue(int16_t temp, uint16_t humi)
 {
-	if (temp < 100)
+	if (temp < 1000)
 	{
 		ledData[0] = font[temp % 10];
 		ledData[1] = font[(temp / 10) % 10] | 0x80; // add DP
@@ -106,7 +111,7 @@ VOID LedSegmentDisplayMeasureValue(int16_t temp, uint16_t humi)
 		ledData[1] = font[0];
 		ledData[2] = font[1];
 	}
-	if (humi < 100)
+	if (humi < 1000)
 	{
 		ledData[3] = font[humi % 10];
 		ledData[4] = font[(humi / 10) % 10] | 0x80;
@@ -114,9 +119,9 @@ VOID LedSegmentDisplayMeasureValue(int16_t temp, uint16_t humi)
 	}
 	else
 	{
-		ledData[0] = font[0];
-		ledData[1] = font[0];
-		ledData[2] = font[1];
+		ledData[3] = font[0];
+		ledData[4] = font[0];
+		ledData[5] = font[1];
 	}
 	LedSegmentOutput();
 }
