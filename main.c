@@ -31,7 +31,7 @@ void main()
   	OpenUartPort(UART_PORT_1, 9600);
 	i2cStatus = SensorInit();
 	if (i2cStatus == SUCCESS)
-		StartShortTimer(3000, MeasureProcess, NULL);
+		MeasureProcess(NULL);
   	InitDevice(NULL);
 	InitRegister();
 	InitParameter(DefineParamProc);

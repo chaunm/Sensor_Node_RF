@@ -64,7 +64,7 @@ VOID LedSegmentInit()
 	BYTE i;
 	// init display data
 	for (i = 0; i < NUMBER_OF_LED; i++)
-		ledData[i] = 0xFF;
+		ledData[i] = font[0];
 	ledData[1] |= 0x80;
 	ledData[4] |= 0x80;
 	//  need to initialize IO for controlling 74HC595
