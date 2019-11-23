@@ -7,7 +7,7 @@
 #define SensorInit()					HTS221_Init()
 #define SensorReadTemperature(value)	HTS221_GetTemperature(value)
 #define SensorReadHumidity(value)		HTS221_GetHumidity(value)
-#define SeosorGetData(temp, humi)		HTS221_GetData(temp, humi)
+#define SensorGetData(temp, humi)		HTS221_GetData(temp, humi)
 #endif
 
 #ifdef SENSOR_SHT30
