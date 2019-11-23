@@ -442,7 +442,14 @@ INTERNAL VOID OnUartDataProc(PVOID pData)
     PBYTE pDataRemote  = (PBYTE)(pBuffer->pData);
 	// chau nguyen - add return if address is different from my address - done
 	if (pBuffer->nAddr != g_nDeviceAddress)
+	{
+		// repeater - forward message for device 32 - add more device to this for forwarding
+		if (pBuffer->nAddr == 32)
+		{
+			WriteUartIndirect(UART_PORT_1, pBuffer);
+		}
 		return;
+	}
 
     switch (pBuffer->nType)
     {
